@@ -30,22 +30,23 @@ cohortDefinitionSet <- CohortGenerator::getCohortDefinitionSet(
 tcis <- list(
   #standard analyses that would be performed during routine signal detection
   list(
-    targetId = 1, # Celecoxib
-    comparatorId = 2, # diclofenac
-    indicationId = NULL, # When desired, you can use this to subset the target & comparator to an indication cohort that overlaps the target/comparator start date. Can be NULL.
+    targetId = 20126, # Ace inhibitor
+    comparatorId = 20127, # Diuretic
+    indicationId = 20128, # Hypertensive disorder
     genderConceptIds = c(8507, 8532), # use valid genders (remove unknown)
     minAge = NULL, # All ages In years. Can be NULL
     maxAge = NULL, # All ages In years. Can be NULL
     excludedCovariateConceptIds = c(
-      1118084, # celecoxib
-      1124300  # diclofenac
+      21601783, 
+      21601461
     ) 
   )
 )
 
 outcomes <- tibble::tribble(
   ~cohortId, ~cleanWindow,
-  3,    365,          # GI Bleed
+  20129,    365,          # AMI
+  20130,    365,          # Angioedema
 )
 
 # Time-at-risks (TARs) for the outcomes of interest in your study
@@ -66,19 +67,19 @@ plpTimeAtRisks <- tibble::tribble(
 
 # If you are not restricting your study to a specific time window, 
 # please make these strings empty
-studyStartDate <- "" # Specify in "YYYYMMDD" format
-studyEndDate <- ""   # Specify in "YYYYMMDD" format
+studyStartDate <- "20200101" # Specify in "YYYYMMDD" format
+studyEndDate <- "20241231"   # Specify in "YYYYMMDD" format
 
 # Probably don't change below this line ----------------------------------------
 ## Consider these settings for estimation  -------------------------------------
 useCleanWindowForPriorOutcomeLookback <- FALSE # If FALSE, lookback window is all time prior, i.e., including only first events
 psMatchMaxRatio <- 1 # If bigger than 1, the outcome model will be conditioned on the matched set
-cmMaxCohortSizeForFitting <- 250000 # Downsampled example study to 10000
+cmMaxCohortSizeForFitting <- 10000 # Downsampled example study to 10000
 cmMaxCovBalanceCohortSize <- cmMaxCohortSizeForFitting # Used for covariate balance
-sccsMaxCasesPerOutcome <- 100000 # Mostly used to limit computation for negative controls. 
+sccsMaxCasesPerOutcome <- 10000 # Mostly used to limit computation for negative controls. 
 
 ## Consider these settings for patient-level prediction  -----------------------
-plpMaxSampleSize <- 1000000 # Downsampled example study to 20000
+plpMaxSampleSize <- 20000 # Downsampled example study to 20000
 
 ########################################################
 # Below the line - DO NOT MODIFY -----------------------

@@ -7,7 +7,12 @@ CREATE TABLE #Codesets (
 INSERT INTO #Codesets (codeset_id, concept_id)
 SELECT 0 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 ( 
-  select concept_id from @vocabulary_database_schema.CONCEPT where (concept_id in (1124300))
+  select concept_id from @vocabulary_database_schema.CONCEPT where (concept_id in (21601783))
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  WHERE c.invalid_reason is null
+  and (ca.ancestor_concept_id in (21601783))
 
 ) I
 ) C;
@@ -29,18 +34,18 @@ FROM
          OP.observation_period_start_date as op_start_date, OP.observation_period_end_date as op_end_date, cast(E.visit_occurrence_id as bigint) as visit_occurrence_id
   FROM 
   (
-  -- Begin Drug Era Criteria
-select C.person_id, C.drug_era_id as event_id, C.start_date, C.end_date,
-    CAST(NULL as bigint) as visit_occurrence_id,C.start_date as sort_date
+  -- Begin Drug Exposure Criteria
+select C.person_id, C.drug_exposure_id as event_id, C.start_date, C.end_date,
+  C.visit_occurrence_id,C.start_date as sort_date
 from 
 (
-  select de.person_id,de.drug_era_id,de.drug_concept_id,de.drug_exposure_count,de.gap_days,de.drug_era_start_date as start_date, de.drug_era_end_date as end_date 
-  FROM @cdm_database_schema.DRUG_ERA de
-where de.drug_concept_id in (SELECT concept_id from  #Codesets where codeset_id = 0)
+  select de.person_id,de.drug_exposure_id,de.drug_concept_id,de.visit_occurrence_id,days_supply,quantity,refills,de.drug_exposure_start_date as start_date, COALESCE(de.drug_exposure_end_date, DATEADD(day,de.days_supply,de.drug_exposure_start_date), DATEADD(day,1,de.drug_exposure_start_date)) as end_date 
+  FROM @cdm_database_schema.DRUG_EXPOSURE de
+JOIN #Codesets cs on (de.drug_concept_id = cs.concept_id and cs.codeset_id = 0)
 ) C
 
 
--- End Drug Era Criteria
+-- End Drug Exposure Criteria
 
   ) E
 	JOIN @cdm_database_schema.observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
@@ -74,7 +79,7 @@ FROM (
   ) MG -- matching groups
 
 ) Results
-WHERE Results.ordinal = 1
+
 ;
 
 -- custom era strategy

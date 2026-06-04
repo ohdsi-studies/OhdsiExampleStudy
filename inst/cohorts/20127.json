@@ -3,8 +3,9 @@
 	"PrimaryCriteria" : {
 		"CriteriaList" : [
 			{
-				"ConditionOccurrence" : {
-					"CodesetId" : 0
+				"DrugExposure" : {
+					"CodesetId" : 1,
+					"DrugTypeExclude" : false
 				}
 			}
 		],
@@ -18,22 +19,22 @@
 	},
 	"ConceptSets" : [
 		{
-			"id" : 0,
-			"name" : "GI bleed",
+			"id" : 1,
+			"name" : "[Strategus] C1 Diuretics for test package",
 			"expression" : {
 				"items" : [
 					{
 						"concept" : {
-							"CONCEPT_ID" : 192671,
-							"CONCEPT_NAME" : "Gastrointestinal hemorrhage",
-							"STANDARD_CONCEPT" : "S",
-							"STANDARD_CONCEPT_CAPTION" : "Standard",
+							"CONCEPT_ID" : 21601461,
+							"CONCEPT_NAME" : "DIURETICS",
+							"STANDARD_CONCEPT" : "C",
+							"STANDARD_CONCEPT_CAPTION" : "Classification",
 							"INVALID_REASON" : "V",
 							"INVALID_REASON_CAPTION" : "Valid",
-							"CONCEPT_CODE" : "74474003",
-							"DOMAIN_ID" : "Condition",
-							"VOCABULARY_ID" : "SNOMED",
-							"CONCEPT_CLASS_ID" : "Clinical Finding"
+							"CONCEPT_CODE" : "C03",
+							"DOMAIN_ID" : "Drug",
+							"VOCABULARY_ID" : "ATC",
+							"CONCEPT_CLASS_ID" : "ATC 2nd"
 						},
 						"isExcluded" : false,
 						"includeDescendants" : true,
@@ -47,12 +48,13 @@
 		"Type" : "First"
 	},
 	"ExpressionLimit" : {
-		"Type" : "First"
+		"Type" : "All"
 	},
 	"InclusionRules" : [],
 	"EndStrategy" : {
-		"DateOffset" : {
-			"DateField" : "StartDate",
+		"CustomEra" : {
+			"DrugCodesetId" : 1,
+			"GapDays" : 30,
 			"Offset" : 0
 		}
 	},

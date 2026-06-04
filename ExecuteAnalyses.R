@@ -17,13 +17,13 @@ Sys.setenv("_JAVA_OPTIONS"="-Xmx4g") # Sets the Java maximum heap space to 4GB
 Sys.setenv("VROOM_THREADS"=1) # Sets the number of threads to 1 to avoid deadlocks on file system
 
 ##=========== START OF INPUTS ==========
-options(sqlRenderTempEmulationSchema = "scratch.scratch_mschuemi") # For database platforms that don't support temp tables
-cdmDatabaseSchema <- "merative_ccae.cdm_merative_ccae_v3046" # The database / schema where the data in CDM format live
-workDatabaseSchema <- "scratch.scratch_mschuemi" # A database /schema where study tables can be written
-cohortTableName <- "example_strategus_study_ccae" # Where the cohorts will be written
-resultsFolder <- "e:/exampleStrategusStudy/results" # Where the output files will be written
-workFolder <- "e:/exampleStrategusStudy/strategusInternals" # Where the intermediate work files will be written
-databaseName <- "CCAE" # Only used as a folder name for results from the study
+options(sqlRenderTempEmulationSchema = Sys.getenv("DATABRICKS_SCRATCH_SCHEMA")) # For database platforms that don't support temp tables
+cdmDatabaseSchema <- "merative_mdcr.sample_cdm_merative_mdcr" # The database / schema where the data in CDM format live
+workDatabaseSchema <- Sys.getenv("DATABRICKS_SCRATCH_SCHEMA") # A database /schema where study tables can be written
+cohortTableName <- "ohdsi_example_study_mdcr_sample" # Where the cohorts will be written
+resultsFolder <- "e:/git/OhdsiExampleStudy/results" # Where the output files will be written
+workFolder <- "e:/git/OhdsiExampleStudy/strategusInternals" # Where the intermediate work files will be written
+databaseName <- "MDCR Sample" # Only used as a folder name for results from the study
 minCellCount <- 5 # Minimum cell count for inclusion in output tables
 
 # Create the connection details for your CDM
@@ -31,9 +31,9 @@ minCellCount <- 5 # Minimum cell count for inclusion in output tables
 # https://ohdsi.github.io/DatabaseConnector/reference/createConnectionDetails.html
 connectionDetails <- DatabaseConnector::createConnectionDetails(
   dbms = "spark",
-  connectionString = keyring::key_get("databricksConnectionString"),
+  connectionString = glue::glue("jdbc:databricks://{Sys.getenv('DATABRICKS_HOST')}/default;transportMode=http;ssl=1;AuthMech=3;httpPath={Sys.getenv('DATABRICKS_HTTP_PATH')}"),
   user = "token",
-  password = keyring::key_get("databricksToken")
+  password = Sys.getenv("DATABRICKS_TOKEN")
 )
 
 # You can use this snippet to test your connection

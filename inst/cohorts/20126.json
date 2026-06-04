@@ -3,8 +3,9 @@
 	"PrimaryCriteria" : {
 		"CriteriaList" : [
 			{
-				"DrugEra" : {
-					"CodesetId" : 0
+				"DrugExposure" : {
+					"CodesetId" : 0,
+					"DrugTypeExclude" : false
 				}
 			}
 		],
@@ -19,24 +20,24 @@
 	"ConceptSets" : [
 		{
 			"id" : 0,
-			"name" : "Diclofenac",
+			"name" : "[Strategus] T1 ACE inhibitors for test package",
 			"expression" : {
 				"items" : [
 					{
 						"concept" : {
-							"CONCEPT_ID" : 1124300,
-							"CONCEPT_NAME" : "diclofenac",
-							"STANDARD_CONCEPT" : "S",
-							"STANDARD_CONCEPT_CAPTION" : "Standard",
+							"CONCEPT_ID" : 21601783,
+							"CONCEPT_NAME" : "ACE INHIBITORS, PLAIN",
+							"STANDARD_CONCEPT" : "C",
+							"STANDARD_CONCEPT_CAPTION" : "Classification",
 							"INVALID_REASON" : "V",
 							"INVALID_REASON_CAPTION" : "Valid",
-							"CONCEPT_CODE" : "3355",
+							"CONCEPT_CODE" : "C09A",
 							"DOMAIN_ID" : "Drug",
-							"VOCABULARY_ID" : "RxNorm",
-							"CONCEPT_CLASS_ID" : "Ingredient"
+							"VOCABULARY_ID" : "ATC",
+							"CONCEPT_CLASS_ID" : "ATC 3rd"
 						},
 						"isExcluded" : false,
-						"includeDescendants" : false,
+						"includeDescendants" : true,
 						"includeMapped" : false
 					}
 				]
@@ -47,7 +48,7 @@
 		"Type" : "First"
 	},
 	"ExpressionLimit" : {
-		"Type" : "First"
+		"Type" : "All"
 	},
 	"InclusionRules" : [],
 	"EndStrategy" : {

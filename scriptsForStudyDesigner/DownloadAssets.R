@@ -24,9 +24,11 @@ authWebApi(authMethod = "none")
 #  - cohortName: a custom cohort name or set to NA to the ATLAS cohort name
 cohortsToDownload <- tibble::tribble(
   ~atlasCohortId, ~cohortId, ~cohortName,
-  1778211, 1, "celecoxib",
-  1790989, 2, "diclofenac",
-  1780946, 3, "GI Bleed"
+  20126, NA, "ACE inhibitor",
+  20127, NA, "Diuretic",
+  20128, NA, "Hypertensive disorder",
+  20129, NA, "Acute myocardial infarction",
+  20130, NA, "Angioedema"
 )
 
 downloadCohortDefinitionSet(
