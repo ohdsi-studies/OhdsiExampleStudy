@@ -1,7 +1,7 @@
 OHDSI Example Study
 =============
 
-<img src="https://img.shields.io/badge/Study%20Status-Design%20Finalized-brightgreen.svg" alt="Study Status: Design Finalized"> | The protocol and study code have been finalized. | 
+<img src="https://img.shields.io/badge/Study%20Status-Design%20Finalized-brightgreen.svg" alt="Study Status: Design Finalized">
 
 - Analytics use case(s): - **Characterization, Population-Level Estimation and Patient-Level Prediction**
 - Study type: **Technical Readiness**
