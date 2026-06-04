@@ -1,64 +1,174 @@
-StrategusStudyRepoTemplate
+OHDSI Example Study
+=============
+
+<img src="https://img.shields.io/badge/Study%20Status-Design%20Finalized-brightgreen.svg" alt="Study Status: Design Finalized"> | The protocol and study code have been finalized. | 
+
+- Analytics use case(s): - **Characterization, Population-Level Estimation and Patient-Level Prediction**
+- Study type: **Technical Readiness**
+- Tags: **HADES**
+- Study lead: **-**
+- Study lead forums tag: **[[Lead tag]](https://forums.ohdsi.org/u/[Lead tag])**
+- Study start date: **-**
+- Study end date: **-**
+- Protocol: **[PDF Document](C:\git\ohdsi-studies\OhdsiExampleStudy\Documents\ohdsi-example-study-protocol.pdf)**
+- Publications: **-**
+- Results explorer: **-**
+
+This study is designed to assess a site's technical readiness to participate in OHDSI network studies using data standardized to the OMOP Common Data Model (CDM). The study package is specified using Strategus and exercises core components of the OHDSI Health Analytics Data-to-Evidence Suite (HADES), including cohort generation, cohort diagnostics, characterization, incidence estimation, comparative effectiveness analysis, self-controlled case series, and patient-level prediction. The primary objective is not to answer a scientific research question, but rather to verify that a site can successfully install, configure, execute, and review the outputs of a representative OHDSI study package. All results are generated as transparent CSV files that can be reviewed locally to understand the information that would typically be returned to a study coordinator in a distributed research network. Successful completion demonstrates the infrastructure, software, and operational capabilities necessary to execute Strategus-defined studies and participate in future OHDSI network research.
+[You can add other text at this point]
+
+
+How to run
 =================
 
-See the **[Using This Template.md](template_docs/UsingThisTemplate.md)** for more information on how to use this template.
+As a Site Participant, your role is to restore the study environment, configure local database settings, run the study and review the aggregate outputs. **Since this is an example study, we do not want you to share results.** For the sake of completeness, we include a script that is used to share an approved result ZIP file with the Study Coordinator. The shared ZIP file will contain only the aggregate summary statistics in CSV files and does not contain patient-level data.
 
-----
+Before using this guide, review the [Prerequisites](template_docs/prerequisites.md).
 
-An OHDSI study repository is expected to have a README.md file where the header conforms to a standard. A template README file is provided here:
+## Site Execution Workflow
 
-**[README file template](template_docs/templateREADME.md)**
+A typical Site Participant workflow is:
 
-When initiating a repository, please copy this file, rename it to 'README.md', and fill in the fields as appropriate.
+1. Download or clone the finalized study repository.
+2. Open the RStudio project.
+3. Restore the R environment with `renv::restore()`.
+4. Configure local database, results, and work folder settings in `ExecuteAnalyses.R`.
+5. Run the study against the local OMOP CDM.
+6. Review the aggregate results.
+7. Use `ShareResults.R` to create a result ZIP file.
+8. Share the approved ZIP file using the process provided by the Study Coordinator.
 
-The information in the repository README file will be used to automatically update the [list of OHDSI research studies](https://data.ohdsi.org/OhdsiStudies/), so it is important to fill in the template accurately, and keep it up-to-date.
+## Open The Study Repository
 
-## Elements in the README template
+Download or clone the study repository to a local folder. Open the `.Rproj` file in RStudio so paths resolve relative to the project root.
 
-| Element | Description |
-| ------- | ----------- |
-| [Study title]      | A meaningful title of the research project.            
-| Study status badge | A badge indicating the study status. See [below](#study-status) for valid options. |
-| Analytics use case | One or more analytics use cases included in the study (in a comma-separated list). See [below](#analytics-use-cases) for valid options. |
-| Study type | The type of study. See [below](#study-types) for valid options. |
-| Tags | Zero, one, or more additional keywords that can be used to filter the list of studies. The list of tags is not restricted, but be conservative in making up new tags. For example: `EHDEN` to identify studies that are part of the [EHDEN project](https://www.ehden.eu/). |
-| Study lead | The name of the study lead.|
-| Study lead forums tag | The OHDSI forums tag of the study lead, which can be used to contact the lead. It is recommended to make this a hyperlink to lead's forums profile |
-| Study start date | When did work on the study commence? This date typically indicates when development of the protocol was initiated. Format: [Month] [Day], [Year] (e.g. May 1, 2019)|
-| Study end date | When was the study completed? This typically indicates when the analyses were completed and the results have been collected. Do not enter future (planned) dates here. Format: [Month] [Day], [Year] (e.g. May 1, 2019)| 
-| Protocol | A hyperlink to the protocol. The protocol is expected to be a document in the study repository itself. | 
-| Publications | Zero, one or more hyperlinks to papers produced as part of the study (comma-separated). | 
-| Results explorer | A hyperlink to a web app (e.g. a Shiny app) where the results of the study can be explored. |
+The first time you open the project, R may report that packages recorded in the lockfile are not installed. This is expected for a fresh checkout.
 
-### Study Status
+## Restore The R Environment
 
-Choose one of the following options:
+Restore the project package environment before running study scripts:
 
-| Badge             | Description                          |
-| ----------------- | ------------------------------------ |
-| <img src="https://img.shields.io/badge/Study%20Status-Repo%20Created-lightgray.svg" alt="Study Status: Repo Created"> | The study repository has just been created. Work has not yet commenced. | 
-| <img src="https://img.shields.io/badge/Study%20Status-Started-blue.svg" alt="Study Status: Started"> | A first commit was made (to something else than the README file). Work has commenced. |
-| <img src="https://img.shields.io/badge/Study%20Status-Design%20Finalized-brightgreen.svg" alt="Study Status: Design Finalized"> | The protocol and study code have been finalized. | 
-| <img src="https://img.shields.io/badge/Study%20Status-Results%20Available-yellow.svg" alt="Study Status: Results Available"> | The study results are publicly available, for example in a paper or results explorer app. | 
-| <img src="https://img.shields.io/badge/Study%20Status-Complete-orange.svg" alt="Study Status: Complete"> | The study is complete, no further dissemination planned. | 
-| <img src="https://img.shields.io/badge/Study%20Status-Suspended-red.svg" alt="Study Status: Suspended"> | The study has been suspended, and may or may not be continued at a later point in time. | 
+```r
+renv::restore()
+```
 
-Copy the relevant markdown code from [this page](badgesMarkdownCode.md), and paste it in your README file, just below the study title.
+Follow the prompts to install the required packages. This can take a while, especially on a new machine.
 
-### Analytics Use Cases
+After `renv::restore()` completes, restart R before running the study.
 
-Choose one or more options from: 
+## Configure `ExecuteAnalyses.R`
 
-- `Characterization`
-- `Population-Level Estimation`, or
-- `Patient-Level Prediction` 
+`ExecuteAnalyses.R` is the main script for running the study at a participating site. The section near the top of the file is intended for site-specific inputs.
 
-See [the Data Analytics Use Cases chapter](https://ohdsi.github.io/TheBookOfOhdsi/DataAnalyticsUseCases.html) for more details.
+Review and update:
 
-### Study types
+- `cdmDatabaseSchema`: the schema containing the local OMOP CDM.
+- `workDatabaseSchema`: a writable schema where study cohort tables and temporary work tables can be created.
+- `cohortTableName`: the prefix used for study cohort tables.
+- `resultsFolder`: the local folder where Strategus result files will be written.
+- `workFolder`: the local folder where Strategus intermediate work files will be written.
+- `databaseName`: the name used to identify this data source in the output folder structure.
+- `minCellCount`: the minimum cell count used for small-cell suppression in output tables.
+- `connectionDetails`: the DatabaseConnector settings for the local database.
 
-Can be either:
+Some database platforms also need a temporary emulation schema. If needed, set `options(sqlRenderTempEmulationSchema = "...")` near the top of `ExecuteAnalyses.R`.
 
-- `Methods Research` if the study explores a methodological question, for example an evaluation of various propensity score approaches. 
-- `Clinical Application` if the study aims to answer a clinically relevant question, for example 'Does drug A cause outcome B?'.
+The script also sets environment options such as `_JAVA_OPTIONS` and `VROOM_THREADS`. These are included to support common OHDSI execution needs, but your local environment should still follow the official HADES setup guidance described in [Prerequisites](template_docs/prerequisites.md).
 
+## Test The Database Connection
+
+Before running the full study, test your database connection from R.
+
+`ExecuteAnalyses.R` includes a commented example:
+
+```r
+conn <- DatabaseConnector::connect(connectionDetails)
+DatabaseConnector::disconnect(conn)
+```
+
+Confirm that the connection succeeds and that the configured database account can read from the CDM schema and write to the work schema.
+
+## Run The Study
+
+After local settings are configured, run `ExecuteAnalyses.R`.
+
+The script loads the Strategus analysis specification distributed with the study, creates execution settings, saves those execution settings for reference, and calls `Strategus::execute()`. The Study Designer controls the analysis specification file name in `config.yml`; Site Participants should not need to change it.
+
+`ExecuteAnalyses.R` appends `databaseName` to the configured `resultsFolder` and `workFolder`.
+
+By default, result files are written under:
+
+```text
+<resultsFolder>/<databaseName>/
+```
+
+Intermediate work files are written under:
+
+```text
+<workFolder>/<databaseName>/
+```
+
+Depending on the study design and database size, execution can take a long time. Leave R running until the script completes or fails with an error.
+
+## Review Local Results
+
+Before sharing results, review the aggregate outputs produced in the configured result folder.
+
+The exact folder contents depend on the Strategus modules included in the study. Results are generally stored as CSV files organized by module.
+
+Review should confirm that:
+
+- The study completed successfully.
+- Expected module result folders were created.
+- Results are aggregate outputs suitable for sharing.
+- No patient-level data are present in the files being shared.
+- Any site-specific governance or approval process has been completed.
+
+If the study fails or outputs are unexpected, contact the Study Coordinator before sharing results. Include the relevant log files or error messages, but do not share patient-level data.
+
+## Create The Result ZIP File
+
+After local review and approval, use `ShareResults.R` to package the aggregate results.
+
+Before running it, confirm that:
+
+- `resultsFolder` matches the value used in `ExecuteAnalyses.R`.
+- `databaseName` matches the value used in `ExecuteAnalyses.R`.
+- Any SFTP settings provided by the Study Coordinator are entered correctly if the study uses secure SFTP.
+
+`ShareResults.R` calls `Strategus::zipResults()` to create a ZIP file from the aggregate Strategus result CSV files. It then uploads the ZIP file through `OhdsiSharing::sftpUploadFile()` when the study is configured to use secure SFTP.
+
+The ZIP file is created in:
+
+```text
+<resultsFolder>/<databaseName>/
+```
+
+## Share Results
+
+Follow the sharing instructions provided by the Study Coordinator.
+
+Some studies use secure SFTP. Other studies may collect ZIP files through a different approved process. The important requirement is that only the approved aggregate result ZIP file is shared.
+
+If the study uses secure SFTP, the Study Coordinator should provide:
+
+- SFTP user name.
+- Private key file.
+- Remote folder or upload instructions.
+- Any study-specific naming requirements.
+
+Keep credentials and private keys secure. Do not commit them to the repository.
+
+## Common Issues
+
+**`renv::restore()` fails**
+
+Confirm that the HADES setup prerequisites are complete, including RTools or platform build tools, Java, and GitHub access.
+
+**Database connection fails**
+
+Confirm the database platform, server, user name, password, driver setup, and network access. Test with a simple `DatabaseConnector::connect()` call before running the study.
+
+**Permission errors occur during execution**
+
+Confirm that the configured account has read access to the CDM schema and write access to the work schema.
