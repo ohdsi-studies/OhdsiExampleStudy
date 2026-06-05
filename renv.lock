@@ -56,8 +56,13 @@
     "Characterization": {
       "Package": "Characterization",
       "Version": "3.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN"
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "Characterization",
+      "RemoteRef": "develop",
+      "RemoteSha": "e051e6543eb9457a70dd2621dd8bdd76556f597e"
     },
     "CirceR": {
       "Package": "CirceR",
@@ -674,8 +679,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "OHDSI",
       "RemoteRepo": "ROhdsiWebApi",
-      "RemoteRef": "webapi-3.0",
-      "RemoteSha": "ba3365271d93b93875531855bbbfb5444d5eb7fc"
+      "RemoteRef": "v1.3.3",
+      "RemoteSha": "455c81633de6d68dcd675ddb31f471c66e8fa332"
     },
     "RSQLite": {
       "Package": "RSQLite",
